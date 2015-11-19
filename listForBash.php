@@ -6,7 +6,7 @@ use Symfony\Component\Console\Input\InputArgument;
 
 class listForBash extends Command {
 
-  /**
+	/**
 	 * The console command name.
 	 *
 	 * @var string
@@ -40,15 +40,16 @@ class listForBash extends Command {
 		$commandTyped = $this->argument('commandTyped');
 
 		$allCommands = array_keys($this->getApplication()->all());
-		
+
 		if ($commandTyped) {
-			$colonAt = strpos($commandTyped, ':');
+			$colonAt = strrpos($commandTyped, ':');
 			$possibleCommands = [];
-			foreach ($allCommands as $command ) {
+
+			foreach ($allCommands as $command) {
 				// Return command in result if it starts with $commandTyped
-				if (strpos($command, $commandTyped) === 0) {
+				if (strlen($command) >= strlen($commandTyped) && substr($command, 0, strlen($commandTyped)) == $commandTyped) {
 					// Colons acts as separators in bash, so return only second part if colon is in commandTyped.
-					$possibleCommands[] = $colonAt ? substr($command, $colonAt+1) : $command;
+					$possibleCommands[] = ($command == $commandTyped) ? '-h' : ($colonAt ? substr($command, $colonAt+1, strlen($command)) : $command);
 				}
 			}
 		} else {
